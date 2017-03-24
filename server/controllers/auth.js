@@ -9,14 +9,13 @@ const Auth = {}
 Auth.register = (req, res, next) => {
   let secret = garem(10)
   let hashed = crypto.createHmac('sha256', secret).update(req.body.password).digest('hex')
-  let garem = garem(10)
 
   let dataUser = {
     fullname: req.body.fullname,
     username: req.body.username,
     email: req.body.email,
     password: hashed,
-    salt: garem
+    salt: secret
   }
 
   Model.create(dataUser).then((user) => {
@@ -32,16 +31,14 @@ Auth.register = (req, res, next) => {
 
 Auth.login = (req, res, next) => {
   Model.findOne({username: req.body.username}).then((data) => {
-      if (data.password == crypto.createHmac('sha256', data.salt).update(req.body.password).digest('hex')) {
-        let token = jwt.sign({
-          username: data.username
-        }, secret, {})
-        res.send({token: token})
-      } else {
-        res.send({passworderror: true})
-      }
+    if (data.password === crypto.createHmac('sha256', data.salt).update(req.body.password).digest('hex')) {
+      let token = jwt.sign({username: data.username}, data.salt, {})
+      res.json({token: token})
+    } else {
+      res.json({passworderror: true})
+    }
   }).catch((err) => {
-    res.send({err: err})
+    res.json({err: err})
   })
 }
 
