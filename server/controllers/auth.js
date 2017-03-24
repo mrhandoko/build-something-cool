@@ -22,7 +22,7 @@ Auth.register = (req, res, next) => {
     res.send({message: 'Register Success', data: user})
   }).catch((err) => {
     if (err) {
-      res.send({
+      res.json({
         err: err
       })
     }
@@ -32,7 +32,7 @@ Auth.register = (req, res, next) => {
 Auth.login = (req, res, next) => {
   Model.findOne({username: req.body.username}).then((data) => {
     if (data.password === crypto.createHmac('sha256', data.salt).update(req.body.password).digest('hex')) {
-      let token = jwt.sign({username: data.username}, data.salt, {})
+      let token = jwt.sign({username: data.username}, 'adedemit', {})
       res.json({token: token})
     } else {
       res.json({passworderror: true})
@@ -45,17 +45,17 @@ Auth.login = (req, res, next) => {
 Auth.verify = (req, res, next) => {
   let token = req.params.token
 
-  jwt.verify(token, secret, (err, decoded) => {
+  jwt.verify(token, 'adedemit', (err, decoded) => {
     if (decoded) {
       Model.find({username : decoded.username}).then((data) => {
-        res.send({user: true, userdata: data})
+        res.json({user: true, userdata: data})
       })
     }
     if (!decoded) {
-      res.send({user: false})
+      res.json({user: false})
     }
     if (err) {
-      console.log(err)
+      console.log(err);
     }
   })
 }
