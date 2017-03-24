@@ -4,19 +4,19 @@ const Model = require('../models/users')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const garem = require('garem')
-
 const Auth = {}
 
 Auth.register = (req, res, next) => {
   let secret = garem(10)
   let hashed = crypto.createHmac('sha256', secret).update(req.body.password).digest('hex')
+  let garem = garem(10)
 
   let dataUser = {
     fullname: req.body.fullname,
     username: req.body.username,
     email: req.body.email,
     password: hashed,
-    salt: secret
+    salt: garem
   }
 
   Model.create(dataUser).then((user) => {
