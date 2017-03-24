@@ -10,7 +10,8 @@ let userSchema = new Schema ({
   fullname: String,
   username: String,
   email: String,
-  password: String
+  password: String,
+  salt: String
 }, {
   timestamps: true
 })
