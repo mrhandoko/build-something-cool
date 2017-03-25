@@ -4,8 +4,8 @@
       <h1>Search for an Artist</h1>
       <p>Type an artist name and click on "Search". Then, click on any album from the results to play 30 seconds of its first track.</p>
       <form id="search-form">
-          <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name"/>
-          <input type="submit" id="search" class="btn btn-primary" v-on:click="getAlbums"/>
+          <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name" v-model="artist"/>
+          <button class="btn btn-primary" v-on:click="getAlbums">Submit</button>
       </form>
       <div id="results"></div>
     </div>
@@ -21,14 +21,14 @@ export default {
   data () {
     return {
       msg: 'We Will Build Something Cool Here',
-      login: ''
+      login: '',
+      artist: ''
     }
   },
   methods: {
     getToken() {
       let self = this
       let token  = JSON.parse(localStorage.getItem("token"))
-      console.log(token);
       axios.get('http://localhost:3000/api/verify/' + token).then((response) => {
         // console.log(response.data.user);
         if (!response.data.user) {
@@ -45,7 +45,9 @@ export default {
       })
     },
     getAlbums() {
-      axios.get('http://https://api.spotify.com/v1/search/' + 'danilla').then((response) => {
+      let self = this
+      axios.post('http://localhost:3000/api/search', self.artist).then((response) => {
+        console.log('tes');
         console.log(response)
       })
     }
