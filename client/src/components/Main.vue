@@ -7,7 +7,9 @@
           <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name" v-model="track.artist"/>
           <button class="btn btn-primary" v-on:click="getAlbums">Submit</button>
       </form>
-      <div id="results" v-model="result">{{ result }}</div>
+      <div id="results" v-for="result in results" class="cover">
+        <div><img v-bind:src="result.album.images[1].url" v-on:click="playPreview(result.preview_url)"/><audio v-bind:id="result.preview_url" v-bind:src="result.preview_url"></audio></div>
+      </div>
     </div>
 
   </div>
@@ -25,15 +27,18 @@ export default {
       track: {
         artist: ''
       },
-      result: ''
+      results: ''
     }
   },
   methods: {
     getAlbums() {
       let self = this
       axios.post('http://localhost:3000/api/search', this.track).then((response) => {
-        this.result = response.data
+        this.results = response.data
       })
+    },
+    playPreview(id) {
+      document.getElementById(id).play()
     }
   }
 }
@@ -51,7 +56,6 @@ body {
     width: 300px;
     height: 300px;
     display: inline-block;
-    background-size: cover;
 }
 .cover:hover {
     cursor: pointer;
