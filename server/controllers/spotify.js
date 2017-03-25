@@ -1,9 +1,17 @@
 'use strict'
 
+var SpotifyWebApi = require('spotify-web-api-node')
 const Spotify = {}
 
 Spotify.search = (req, res, next) => {
-  // https://api.spotify.com/v1/search?q=Muse&type=track,artist&market=US
+  var spotifyApi = new SpotifyWebApi()
+
+  spotifyApi.searchTracks(req.body.artist)
+  .then(function(data) {
+    res.send(data.body.tracks.items)
+  }, function(err) {
+    res.send(err)
+  });
 }
 
 module.exports = Spotify

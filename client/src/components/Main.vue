@@ -4,10 +4,10 @@
       <h1>Search for an Artist</h1>
       <p>Type an artist name and click on "Search". Then, click on any album from the results to play 30 seconds of its first track.</p>
       <form id="search-form">
-          <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name" v-model="artist"/>
+          <input type="text" id="query" value="" class="form-control" placeholder="Type an Artist Name" v-model="track.artist"/>
           <button class="btn btn-primary" v-on:click="getAlbums">Submit</button>
       </form>
-      <div id="results"></div>
+      <div id="results" v-model="result">{{ result }}</div>
     </div>
 
   </div>
@@ -22,38 +22,19 @@ export default {
     return {
       msg: 'We Will Build Something Cool Here',
       login: '',
-      artist: ''
+      track: {
+        artist: ''
+      },
+      result: ''
     }
   },
   methods: {
-    getToken() {
-      let self = this
-      let token  = JSON.parse(localStorage.getItem("token"))
-      axios.get('http://localhost:3000/api/verify/' + token).then((response) => {
-        // console.log(response.data.user);
-        if (!response.data.user) {
-          window.location = 'http://localhost:8080/#/login'
-        } else {
-          window.location = 'http://localhost:8080/#/'
-          if(token) {
-            self.login = 'Selamat Datang, ' + response.data.userdata[0].fullname
-          } else {
-            self.login = 'Login'
-          }
-          self.register = 'Logout'
-        }
-      })
-    },
     getAlbums() {
       let self = this
-      axios.post('http://localhost:3000/api/search', self.artist).then((response) => {
-        console.log('tes');
-        console.log(response)
+      axios.post('http://localhost:3000/api/search', this.track).then((response) => {
+        this.result = response.data
       })
     }
-  },
-  mounted () {
-    this.getToken()
   }
 }
 </script>

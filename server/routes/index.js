@@ -14,6 +14,6 @@ router.post('/register', Auth.register)
 router.post('/login', Auth.login)
 router.get('/verify/:token', Auth.verify)
 
-router.get('/search', Spotify.search)
+router.post('/search', Spotify.search)
 
 module.exports = router;
